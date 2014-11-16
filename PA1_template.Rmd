@@ -1,25 +1,77 @@
 ---
-title: "Reproducible Research: Peer Assessment 1"
-output: 
-  html_document:
-    keep_md: true
+title: "Reprodicible Research Project"
+author: "Rama"
+date: "Sunday, November 16, 2014"
+output: html_document
 ---
 
 
-## Loading and preprocessing the data
+```{r, echo=TRUE}
+setwd("C:/RworkingDirectory")
+getwd()
+act <- read.csv("activity.csv", header=TRUE, sep=',')
+## subset of observations without missing data
+
+act1 <- subset(act, !is.na(steps))
+
+actmean <- aggregate(steps ~ date, data = act1, mean)
+actmedian <- aggregate(steps ~ date, data = act1, median)
+
+## total steps taken per day
+
+actsum <- aggregate(steps ~ date, data = act1, sum)
+
+```
+
+You can also embed plots, for example:
+
+```{r, echo=TRUE}
+with(actsum, hist(actsum$steps, main = "Total Steps taken Per day",xlab = "Date", col = "red"))
+```
+
+```{r, echo=TRUE}
+##  mean of steps by interval accross all days
+
+actIntmean <- aggregate(steps ~ interval, data = act1, mean)
 
 
+## Interval with max number of steps
 
-## What is mean total number of steps taken per day?
+actIntmean[which.max(actIntmean$steps), ]
 
+```
 
+```{r, echo=TRUE}
+## get the total number of observation with a NA in the steps
+library(lattice)
+ nrow(subset(act, is.na(steps)))
 
-## What is the average daily activity pattern?
+## Draw time series plot with 5 minute interval on the x-axis and steps on the y-axis
 
+xyplot( steps ~ interval ,data = actIntmean, type = "l")
 
+```
 
-## Imputing missing values
+## filling the NA(missing vlaue ) with interval mean steps accross all days
+ec
+```{r, echo=TRUE} 
+actfd <- act
 
+for (i in 1: nrow(actIntmean)) { int <- actIntmean[i,1] ; st <- actIntmean[i,2] ;
+  
+    c <- which(is.na(actfd$steps) & actfd$interval == int)
+    for (ct in 1:length(c)) { actfd[c[ct],1] <- st }
+   
+  }
+head(actfd,5)
+```
+```{r, echo=TRUE} 
+library(lubridate)
+actfd$wkday <- wday(ymd(actfd$date))
+actfd[which(actfd$wkday > 2),  4] <- "weekday"
+actfd[which(actfd$wkday == 1 | actfd$wkday == 2 ),  4] <- "weekend"
 
-
-## Are there differences in activity patterns between weekdays and weekends?
+## Panel Plot
+library(lattice)
+xyplot(steps ~ interval | as.factor(wkday), data = actfd, type = "l", layout = c(1,2))
+```
