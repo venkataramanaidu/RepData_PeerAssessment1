@@ -76,7 +76,11 @@ xyplot( steps ~ interval ,data = actIntmean, type = "l")
 ![plot of chunk unnamed-chunk-4](figure/unnamed-chunk-4-1.png) 
 
 ## filling the NA(missing vlaue ) with interval mean steps accross all days
+<<<<<<< HEAD
 
+=======
+ec
+>>>>>>> 19aced334486314c0ed4d00465d888733785f9c1
 
 ```r
 actfd <- act
